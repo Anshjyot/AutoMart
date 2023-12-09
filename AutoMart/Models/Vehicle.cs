@@ -34,7 +34,7 @@ namespace AutoMart.Models
         public bool Approved { get; set; }
         public virtual WebUser? User { get; set; }
 
-        public virtual ICollection<Review>? Reviews { get; set; }
+        public virtual ICollection<Feedback>? Feedbacks { get; set; }
 
         public virtual ICollection<Cart>? Carts { get; set; }
 

@@ -25,9 +25,9 @@
             <div>
                 <a href="/Vehicles/Show/@item.Vehicle.VehicleId" class="btn btn-outline-secondary">View Vehicle <i class="bi bi-eyeglasses"></i></a>
             </div>
-            <div>@item.Date</div>
+            <div>@item.DateSubmitted</div>
             <div>
-                <form method="post" action="/Carts/Delete">
+                <form method="post" action="/Carts/RemoveFromCart">
                     <input type="hidden" name="VehicleId" value="@item.VehicleId" />
                     <input type="hidden" name="UserId" value="@item.UserId" />
                     <input type="hidden" name="Id" value="@item.Id" />

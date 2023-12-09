@@ -1,0 +1,25 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Application Error";
+}
+
+<h1 class="text-warning">Whoops!</h1>
+<h2 class="text-warning">Something went wrong on our end.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Tracking ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h3>Debugging Mode</h3>
+<p>
+    Switching to <strong>Debugging</strong> mode will provide more detailed information about the issue.
+</p>
+<p>
+    <strong>Debugging mode should not be used in production.</strong>
+    It could potentially reveal detailed exception information to the public.
+    For debugging locally, you can set the <strong>ASPNETCORE_ENVIRONMENT</strong> variable to <strong>Debugging</strong>
+    and relaunch the application.
+</p>

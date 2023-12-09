@@ -111,10 +111,10 @@ namespace AutoMart.Controllers
                                         ).Select(a => a.VehicleId).ToList();
 
                 // Cautare in comentarii (Content)
-                List<int> VehicleIdsOfCommentsWithSearchString = db.Reviews
+                List<int> VehicleIdsOfCommentsWithSearchString = db.Feedbacks
                                         .Where
                                         (
-                                         c => c.Text.Contains(search)
+                                         c => c.ReviewText.Contains(search)
                                         ).Select(c => (int)c.VehicleId).ToList();
 
                 // Se formeaza o singura lista formata din toate id-urile selectate anterior
@@ -190,9 +190,9 @@ namespace AutoMart.Controllers
         public IActionResult Show(int id)
         {
             Vehicle vehicle = db.Vehicles.Include("Category")
-                                         .Include("Reviews")
+                                         .Include("Feedbacks")
                                          .Include("User")
-                                         .Include("Reviews.User")
+                                         .Include("Feedbacks.User")
                                          .FirstOrDefault(prod => prod.VehicleId == id);
 
             if (vehicle == null)
@@ -232,7 +232,7 @@ namespace AutoMart.Controllers
         [HttpPost]
         public async Task<IActionResult> New(Vehicle vehicle, IFormFile VehicleImage)
         {
-            vehicle.Reviews = null;
+            vehicle.Feedbacks = null;
             vehicle.UserId = _userManager.GetUserId(User);
             var sanitizer = new HtmlSanitizer();
 
@@ -378,7 +378,7 @@ namespace AutoMart.Controllers
         [HttpPost]
         public ActionResult Delete(int id)
         {
-            Vehicle vehicle = db.Vehicles.Include("Reviews").Where(prod => prod.VehicleId == id).First();
+            Vehicle vehicle = db.Vehicles.Include("Feedbacks").Where(prod => prod.VehicleId == id).First();
 
             if (vehicle.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
             {

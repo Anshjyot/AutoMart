@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Main/Error");
    
     app.UseHsts();
 }
@@ -49,7 +49,8 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Main}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
+

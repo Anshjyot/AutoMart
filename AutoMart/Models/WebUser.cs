@@ -8,9 +8,9 @@ namespace AutoMart.Models
 {
     public class WebUser : IdentityUser
     {
-        public virtual ICollection<Review>? Reviews { get; set; }
+        public virtual ICollection<Feedback>? Feedbacks { get; set; }
 
-        public virtual ICollection<Vehicle>? Vehicle { get; set; }
+        public virtual ICollection<Vehicle>? Vehicles { get; set; }
 
         public virtual ICollection<Cart>? Carts { get; set; }
 

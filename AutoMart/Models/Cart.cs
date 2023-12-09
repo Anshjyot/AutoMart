@@ -12,6 +12,6 @@ namespace AutoMart.Models
         public string? UserId { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
         public virtual WebUser? User { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime DateSubmitted { get; set; }
     }
 }

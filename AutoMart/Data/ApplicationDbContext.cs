@@ -14,7 +14,8 @@ namespace AutoMart.Data
         public DbSet<WebUser> WebUsers { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Category> VehicleCategory { get; set; }
-        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+
         public DbSet<Cart> Carts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

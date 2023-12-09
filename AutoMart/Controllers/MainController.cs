@@ -7,33 +7,25 @@ using AutoMart.Models;
 
 namespace AutoMart.Controllers
 {
-    public class HomeController : Controller
+    public class MainController : Controller
     {
 
-        private readonly ILogger<HomeController> _logger;
-
-        private readonly ApplicationDbContext db;
-
-        private readonly UserManager<WebUser> _userManager;
-
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<WebUser> _webUserManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger<MainController> _logger;
 
-        public HomeController(
-            ApplicationDbContext context,
+        public MainController(
+            ApplicationDbContext dbContext,
             UserManager<WebUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<HomeController> logger
-
+            ILogger<MainController> logger
             )
         {
-            db = context;
-
-            _userManager = userManager;
-
+            _dbContext = dbContext;
+            _webUserManager = userManager;
             _roleManager = roleManager;
-
             _logger = logger;
-
         }
 
         public IActionResult Index()
@@ -43,7 +35,7 @@ namespace AutoMart.Controllers
                 return RedirectToAction("Index", "Vehicles");
             }
 
-            ViewBag.Vehicles = db.Vehicles.OrderByDescending(o => o.Rating).Take(4);
+            ViewBag.Vehicles = _dbContext.Vehicles.OrderByDescending(v => v.Rating).Take(4).ToList();
 
             return View();
         }
@@ -54,7 +46,7 @@ namespace AutoMart.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult AppError()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

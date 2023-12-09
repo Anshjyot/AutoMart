@@ -1,170 +1,120 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMart.Data;
 using AutoMart.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace AutoMart.Controllers
 {
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly ApplicationDbContext db;
-
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<WebUser> _userManager;
-
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public UsersController(
             ApplicationDbContext context,
             UserManager<WebUser> userManager,
-            RoleManager<IdentityRole> roleManager
-            )
+            RoleManager<IdentityRole> roleManager)
         {
-            db = context;
-
+            _context = context;
             _userManager = userManager;
-
             _roleManager = roleManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var users = from user in db.Users
-                        orderby user.UserName
-                        select user;
-
-            ViewBag.UsersList = users;
-
+            var userList = await _context.Users.OrderBy(u => u.UserName).ToListAsync();
+            ViewBag.UsersList = userList;
             return View();
         }
 
-        public async Task<ActionResult> Show(string id)
+        public async Task<IActionResult> Show(string id)
         {
-            WebUser user = db.Users.Find(id);
-            var roles = await _userManager.GetRolesAsync(user);
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
 
-            ViewBag.Roles = roles;
-
+            ViewBag.UserRoles = await _userManager.GetRolesAsync(user);
             return View(user);
         }
 
-        public async Task<ActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string id)
         {
-            WebUser user = db.Users.Find(id);
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return NotFound();
 
-            user.AllRoles = GetAllRoles();
-
-            var roleNames = await _userManager.GetRolesAsync(user); // Lista de nume de roluri
-
-            // Cautam ID-ul rolului in baza de date
-            var currentUserRole = _roleManager.Roles
-                                              .Where(r => roleNames.Contains(r.Name))
-                                              .Select(r => r.Id)
-                                              .First(); // Selectam 1 singur rol
-            ViewBag.UserRole = currentUserRole;
+            ViewBag.RolesForDropdown = await RoleSelectionItems();
+            ViewBag.CurrentUserRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
             return View(user);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Edit(string id, WebUser newData, [FromForm] string newRole)
+        public async Task<IActionResult> Edit(string id, WebUser updatedUserData, [FromForm] string newRole)
         {
-            WebUser user = db.Users.Find(id);
-
-            user.AllRoles = GetAllRoles();
-
+            var userToUpdate = await _context.Users.FindAsync(id);
+            if (userToUpdate == null) return NotFound();
 
             if (ModelState.IsValid)
             {
-                user.UserName = newData.UserName;
-                user.Email = newData.Email;
-                user.FirstName = newData.FirstName;
-                user.LastName = newData.LastName;
-                user.PhoneNumber = newData.PhoneNumber;
+                userToUpdate.UserName = updatedUserData.UserName;
+                userToUpdate.Email = updatedUserData.Email;
+                userToUpdate.FirstName = updatedUserData.FirstName;
+                userToUpdate.LastName = updatedUserData.LastName;
+                userToUpdate.PhoneNumber = updatedUserData.PhoneNumber;
 
-
-                // Cautam toate rolurile din baza de date
-                var roles = db.Roles.ToList();
-
-                foreach (var role in roles)
-                {
-                    // Scoatem userul din rolurile anterioare
-                    await _userManager.RemoveFromRoleAsync(user, role.Name);
-                }
-                // Adaugam noul rol selectat
-                var roleName = await _roleManager.FindByIdAsync(newRole);
-                await _userManager.AddToRoleAsync(user, roleName.ToString());
-
-                db.SaveChanges();
-
+                await ReassignRoles(userToUpdate, newRole);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction("Index");
-        }
 
+            ViewBag.RolesForDropdown = await RoleSelectionItems();
+            return View(userToUpdate);
+        }
 
         [HttpPost]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var user = db.Users
-                         .Include("Vehicle")
-                         .Include("Reviews")
-                         .Include("Carts")      
-                         .Where(u => u.Id == id)
-                         .First();
+            var user = await _context.Users
+                                     .Include(u => u.Vehicles)
+                                     .Include(u => u.Feedbacks)
+                                     .Include(u => u.Carts)
+                                     .FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null) return NotFound();
 
-            // Delete user Vehicle
-            if (user.Vehicle.Count > 0)
-            {
-                foreach (var article in user.Vehicle)
-                {
-                    db.Vehicles.Remove(article);
-                }
-            }
-            // Delete user Reviews
-            if (user.Reviews.Count > 0)
-            {
-                foreach (var comment in user.Reviews)
-                {
-                    db.Reviews.Remove(comment);
-                }
-            }
-            // Delete user Cart
-            if (user.Carts.Count > 0)
-            {
-                foreach (var bookmark in user.Carts)
-                {
-                    db.Carts.Remove(bookmark);
-                }
-            }
+            _context.Vehicles.RemoveRange(user.Vehicles);
+            _context.Feedbacks.RemoveRange(user.Feedbacks);
+            _context.Carts.RemoveRange(user.Carts);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
 
-            db.WebUsers.Remove(user);
-            db.SaveChanges();
-
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
-
-        [NonAction]
-        public IEnumerable<SelectListItem> GetAllRoles()
+        private async Task<IEnumerable<SelectListItem>> RoleSelectionItems()
         {
-            var selectList = new List<SelectListItem>();
-
-            var roles = from role in db.Roles
-                        select role;
-
-            foreach (var role in roles)
+            return await _context.Roles.Select(r => new SelectListItem
             {
-                selectList.Add(new SelectListItem
-                {
-                    Value = role.Id.ToString(),
-                    Text = role.Name.ToString()
-                });
+                Value = r.Id,
+                Text = r.Name
+            }).ToListAsync();
+        }
+
+        private async Task ReassignRoles(WebUser user, string newRoleId)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, roles);
+
+            var newRole = await _roleManager.FindByIdAsync(newRoleId);
+            if (newRole != null)
+            {
+                await _userManager.AddToRoleAsync(user, newRole.Name);
             }
-            return selectList;
         }
     }
 }

@@ -13,8 +13,8 @@ namespace AutoMart.Controllers
     [Authorize]
     public class CartsController : Controller
     {
-        private readonly ApplicationDbContext db;
-        private readonly UserManager<WebUser> _userManager;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<WebUser> _webUserManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<CartsController> _logger;
 
@@ -25,9 +25,9 @@ namespace AutoMart.Controllers
             ILogger<CartsController> logger
             )
         {
-            db = context;
+            _dbContext = context;
 
-            _userManager = userManager;
+            _webUserManager = userManager;
 
             _roleManager = roleManager;
 
@@ -40,9 +40,9 @@ namespace AutoMart.Controllers
         [Authorize(Roles = "User")]
         public IActionResult Show()
         {
-            var idUser = _userManager.GetUserId(User);
+            var idUser = _webUserManager.GetUserId(User);
             _logger.LogInformation($"User Id: {idUser}");
-            var cart = db.Users.Where(x => x.Id == idUser).Include("Carts").Include("Carts.Vehicle").FirstOrDefault();
+            var cart = _dbContext.Users.Where(x => x.Id == idUser).Include("Carts").Include("Carts.Vehicle").FirstOrDefault();
 
             ViewBag.VehiclesCart = cart;
             
@@ -58,27 +58,30 @@ namespace AutoMart.Controllers
 
         [HttpPost]
         [Authorize(Roles = "User")]
-        public ActionResult New(Cart cart)
+        public IActionResult AddToCart(Cart cartItem)
         {
-            db.Carts.Add(cart);
-            db.SaveChanges();
-            TempData["messageCart"] = "The product has been added to the cart!";
-            return Redirect("/Vehicles/Show/" + cart.VehicleId);
+            _dbContext.Carts.Add(cartItem);
+            _dbContext.SaveChanges();
+            TempData["cartItemMessage"] = "Product added to cart!";
+            return Redirect($"/Vehicles/Show/{cartItem.VehicleId}");
         }
 
         [HttpPost]
         [Authorize(Roles = "User")]
-        public ActionResult Delete(Cart aux)
+        public IActionResult RemoveFromCart(Cart cartDetails)
         {
-            var cart = db.Carts.Where(a => a.Id == aux.Id && a.VehicleId == aux.VehicleId && a.UserId == aux.UserId).First();
-            _logger.LogInformation($"Deleting cart with Id: {aux.Id}, VehicleId: {aux.VehicleId}, UserId: {aux.UserId}");
+            var itemToRemove = _dbContext.Carts.First(c => c.Id == cartDetails.Id
+                                                           && c.VehicleId == cartDetails.VehicleId
+                                                           && c.UserId == cartDetails.UserId);
+            _logger.LogInformation($"Removing cart item - ID: {cartDetails.Id}, VehicleID: {cartDetails.VehicleId}, UserID: {cartDetails.UserId}");
 
-            db.Carts.Remove(cart);
-            db.SaveChanges();
-            TempData["message"] = "The product has been removed from the cart";
+            _dbContext.Carts.Remove(itemToRemove);
+            _dbContext.SaveChanges();
+            TempData["cartRemovalMessage"] = "Product removed from cart";
             return RedirectToAction("Show");
         }
     }
-
 }
+
+
 
