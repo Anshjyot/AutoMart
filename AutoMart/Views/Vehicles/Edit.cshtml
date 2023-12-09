@@ -1,0 +1,54 @@
+﻿@model AutoMart.Models.Vehicle
+
+<h2>Edit "@Model.VehicleId. @Model.Title"</h2>
+</br>
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Vehicles", method: FormMethod.Post, routeValues: new { id = Model.VehicleId, enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.Label("Title", "Vehicle Name")
+    <br />
+    @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "form-control" }, value = Model.Title })
+    <br />
+    <br />
+    @Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @Html.Label("Description", "Vehicle Description")
+    <br />
+    @Html.TextArea("Description", Model.Description, new { @class = "form-control custom", value = Html.Raw(Model.Description) })
+    <br />
+    <br />
+    @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @Html.Label("VehicleImage", "Image")
+    <br />
+    @Html.TextBox("VehicleImage", null, new { type = "file", @class = "form-control", value = "" })
+    <br />
+    <br />
+    @Html.HiddenFor(m => m.Photo, new { value = Model.Photo })
+
+    @Html.HiddenFor(m => m.Rating)
+
+    <label>Select Category</label>
+    @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categ, "Value", "Text"), "Select Category", new { @class = "form-control" })
+    <br />
+    @Html.ValidationMessageFor(m => m.Category, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @Html.Label("Price", "Price")
+    <br />
+    @Html.EditorFor(m => m.Price, new { @class = "form-control", type = "numeric", min = "1", value = Model.Price })
+    <br />
+    <br />
+    @Html.ValidationMessageFor(m => m.Price, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    <button class="btn btn-outline-secondary" type="submit">Edit Vehicle</button>
+}

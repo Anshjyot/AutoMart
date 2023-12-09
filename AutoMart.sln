@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoMart", "AutoMart\AutoMart.csproj", "{FF7AD43B-9D3D-4B21-92E2-68B63A7C0A5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF7AD43B-9D3D-4B21-92E2-68B63A7C0A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF7AD43B-9D3D-4B21-92E2-68B63A7C0A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF7AD43B-9D3D-4B21-92E2-68B63A7C0A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF7AD43B-9D3D-4B21-92E2-68B63A7C0A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {12E15E80-DED9-4508-B117-933FD402DF51}
+	EndGlobalSection
+EndGlobal

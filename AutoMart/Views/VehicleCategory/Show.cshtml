@@ -1,0 +1,17 @@
+﻿@model AutoMart.Models.Category
+
+<h2>Show category</h2>
+
+<p>@Model.CategoryName</p>
+
+<form method="post" action="/VehicleCategory/Delete/@Model.CategoryId">
+
+    <button class="btn btn-outline-secondary" type="submit">Delete category</button>
+
+</form>
+<br />
+<a class="btn btn-outline-secondary" href="/VehicleCategory/Index/">Show list of VehicleCategory</a>
+
+<br />
+<hr />
+<br />

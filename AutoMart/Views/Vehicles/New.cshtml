@@ -1,0 +1,59 @@
+﻿@model AutoMart.Models.Vehicle
+
+<h2>New Vehicle!</h2>
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Vehicles", method: FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.Label("Title", "Vehicle Name")
+    <br />
+    @Html.TextBox("Title", null, new { @class = "form-control" })
+    <br />
+    <br />
+    @Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @Html.Label("Description", "Vehicle Description")
+    <br />
+    @Html.TextArea("Description", null, new { @class = "custom" })
+    <br />
+    <br />
+    @Html.ValidationMessageFor(m => m.Description, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @Html.Label("VehicleImage", "Image")
+    <br />
+    @Html.TextBox("VehicleImage", null, new { type = "file", @class = "form-control" })
+    <br />
+    <br />
+
+    <label>Select Category</label>
+    @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categ, "Value", "Text"),
+            "Select Category", new { @class = "form-control" })
+    <br />
+    @Html.ValidationMessageFor(m => m.Category, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @Html.Label("Price", "Price")
+    <br />
+    @Html.TextBoxFor(m => m.Price, new { @class = "form-control", type = "numeric", min = "1" })
+    <br />
+    <br />
+    @Html.ValidationMessageFor(m => m.Price, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    @if (User.IsInRole("Editor"))
+    {
+        <button class="btn btn-outline-secondary" type="submit">Submit Addition Request</button>
+    }
+
+    @if (User.IsInRole("Admin"))
+    {
+        <button class="btn btn-outline-secondary" type="submit">Add Vehicle</button>
+    }
+}

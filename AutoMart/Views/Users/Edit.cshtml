@@ -1,0 +1,60 @@
+﻿@model AutoMart.Models.WebUser
+
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Users",
+      method: FormMethod.Post, routeValues: new { id = @Model.Id }))
+{
+
+    <i class="bi bi-person"></i>
+    @Html.Label("UserName", "User Name", new { @class = "" })
+
+    <br />
+
+    @Html.EditorFor(m => m.UserName)
+
+    <br />
+
+    <i class="bi bi-envelope"></i>
+    @Html.Label("Email", "User Email", new { @class = "" })
+
+    <br />
+
+    @Html.EditorFor(m => m.Email)
+
+    <br />
+
+    <i class="bi bi-phone"></i>
+    @Html.Label("PhoneNumber", "Phone Number")
+
+    <br />
+
+    @Html.EditorFor(m => m.PhoneNumber)
+
+    <br />
+
+    <i class="bi bi-person"></i>
+    @Html.Label("FirstName", "First Name", new { @class = "" })
+
+    <br />
+
+    @Html.EditorFor(m => m.FirstName)
+
+    <br />
+
+    <i class="bi bi-person"></i>
+    @Html.Label("LastName", "Last Name", new { @class = "" })
+
+    <br />
+
+    @Html.EditorFor(m => m.LastName)
+
+    <br />
+
+    <i class="bi bi-card-list"></i>
+    <label>Select Role</label>
+    @Html.DropDownList("newRole", new SelectList(Model.AllRoles, "Value", "Text", ViewBag.UserRole), null, new { @class = "form-control" })
+
+    <br />
+
+    <button class="btn btn-sm btn-outline-secondary" type="submit">Edit User</button>
+}

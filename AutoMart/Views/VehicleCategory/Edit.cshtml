@@ -1,0 +1,15 @@
+﻿@model AutoMart.Models.Category
+
+<h2>Editare categorie</h2>
+
+<form method="post" action="/VehicleCategory/Edit/@Model.CategoryId">
+
+    @Html.Label("CategoryName", "Category name")
+    <br />
+    @Html.Editor("CategoryName", new { htmlAttributes = new { @class = "form-control" }, value = Model.CategoryName })
+    <br /><br />
+
+    <button class="btn btn-outline-secondary" type="submit">Edit Category</button>
+
+</form>
+

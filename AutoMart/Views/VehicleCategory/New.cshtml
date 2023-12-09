@@ -1,0 +1,13 @@
+﻿@model AutoMart.Models.Category
+
+<div class="content-padding">
+    <h2>Add Category</h2>
+
+    <form method="post" action="/VehicleCategory/New">
+        @Html.Label("CategoryName", "Category name")
+        <br />
+        @Html.TextBox("CategoryName", null, new { @class = "form-control" })
+        <br /><br />
+        <button class="btn btn-outline-secondary" type="submit">Add category</button>
+    </form>
+</div>

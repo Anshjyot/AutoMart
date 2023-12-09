@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Montserrat:wght@300;700&display=swap');
+
+/* Font Styles */
+.font-roboto {
+    font-family: 'Roboto', sans-serif;
+}
+
+.font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Main content padding */
+.content-padding {
+    padding-top: 300px;
+}
+
+/* Primary color adjustments */
+.primary-color {
+    background-color: #e3f2fd; /* Light blue background */
+    color: #1e88e5; /* Darker blue text color */
+}
+
+/* Header color adjustments */
+.header-color {
+    background-color: #1e88e5; /* Dark blue background */
+}
+
+/* HTML font size adjustments */
+html {
+    font-size: 15px;
+}
+
+@media (min-width: 640px) {
+    html {
+        font-size: 17px;
+    }
+}
+
+/* Body padding adjustment */
+body {
+    padding-bottom: 70px;
+}
+
+/* Footer positioning and styling */
+.fixed-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 2px 10px #2196f3; /* Blue shadow */
+}
+
+/* Navbar custom styles */
+.navbar-custom {
+    background-color: #0d47a1; /* Updated darker blue for navbar */
+    border: none;
+    box-shadow: 0 2px 10px #0d47a1; /* Blue shadow */
+}
+
+    .navbar-custom .navbar-brand,
+    .navbar-custom a.nav-link {
+        color: #ffffff; /* White text color for better contrast */
+    }
+
+        .navbar-custom a.nav-link:hover {
+            color: #bbdefb; /* Lighter blue for hover effect */
+        }
+
+
+.custom-navbar {
+    background-color: #dce7f8;
+}
+
+
+    /* Signout button styling */
+    .signout-button {
+    color: #ffffff; /* White text color for better contrast */
+}
+
+    .signout-button:hover {
+        color: #bbdefb; /* Lighter blue for hover effect */
+    }
+
+/* Note editor dropdown toggle adjustment */
+.note-editor .dropdown-toggle::after {
+    display: inline-block;
+}
+
+/* Banner styling */
+.banner-color {
+    background-color: #64b5f6; /* Medium blue background */
+    color: white; /* White text for contrast */
+}
+
+/* Card styling for Vehicles */
+.card {
+    box-shadow: 0 2px 10px #2196f3; /* Blue shadow for card */
+}
+
+.card-footer {
+    background-color: rgba(100, 181, 246, 0.2); /* Semi-transparent blue */
+}

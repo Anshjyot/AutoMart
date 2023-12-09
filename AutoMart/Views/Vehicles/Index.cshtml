@@ -1,0 +1,163 @@
+﻿<h2>Our Vehicle!</h2>
+
+<hr>
+@if (ViewBag.Message != null)
+{
+    <h2 class="alert-secondary p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+
+<div class="m-1">
+    <form method="GET">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control"
+                   placeholder="Search vehicle by name or keywords" name="search"
+                   value="@ViewBag.SearchString">
+            <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i> Search </button>
+        </div>
+    </form>
+</div>
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="d-flex flex-row align-content-center justify-content-end ">
+        <div class="m-1">
+            <form method="GET">
+                <input type="hidden" name="sort" value="ascending" />
+                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-check-circle"></i> Sort by pending requests</button>
+            </form>
+        </div>
+
+        <div class="m-1">
+            <form method="GET">
+                <input type="hidden" name="sort" value="descending" />
+                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-check-circle-fill"></i> Sort by approved requests</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <div class="d-flex flex-row align-content-center justify-content-end ">
+        <div class="m-1">
+            <form method="GET">
+                <input type="hidden" name="sort" value="ascending" />
+                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-arrow-up"></i> Sort by increasing price</button>
+            </form>
+        </div>
+
+        <div class="m-1">
+            <form method="GET">
+                <input type="hidden" name="sort" value="descending" />
+                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-arrow-down"></i> Sort by decreasing price</button>
+            </form>
+        </div>
+    </div>
+}
+
+<div class="d-flex align-content-center justify-content-center">
+    <div class="d-flex align-content-center justify-content-start flex-wrap">
+        @foreach (var Vehicle in ViewBag.Vehicles)
+        {
+            @if (Vehicle.Approved)
+            {
+                <div class="card m-3" style="width: 25rem; background-color: white;">
+                    <div class="card-body">
+                        <img src="@Vehicle.Photo" class="card-img-top" alt="@Vehicle.Title" style="border-radius: 8px; width: 23rem; height: 30rem; ">
+
+                        <div class="d-flex flex-row justify-content-between align-items-center">
+                            <h3 class="card-title p-2">@Vehicle.Title</h3>
+                            <div class="card-text p-2"><i class="bi bi-tag"></i> @Vehicle.Price dkk</div>
+                        </div>
+
+                        <h5 class="card-subtitle mb-2 text-muted">@Vehicle.Category.CategoryName</h5>
+
+                        <div class="card-text"><i class="bi bi-star-half"></i> @Vehicle.Rating/5</div>
+
+                        <a href="/Vehicles/Show/@Vehicle.VehicleId" class="btn btn-outline-secondary">View Vehicle</a>
+
+                    </div>
+                </div>
+            }
+            else
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="card m-3" style="width: 25rem;">
+                    <div class="card-header">Vehicle approval request</div>
+                    <div class="card-body">
+                        <img src="@Vehicle.Photo" class="card-img-top" alt="@Vehicle.Title">
+
+                        <div class="d-flex flex-row justify-content-between align-items-center">
+                            <h3 class="card-title p-2">@Vehicle.Title</h3>
+                            <div class="card-text p-2"><i class="bi bi-tag"></i> @Vehicle.Price dkk</div>
+                        </div>
+
+                        <h5 class="card-subtitle mb-2 text-muted">@Vehicle.Category.CategoryName</h5>
+
+                        <div class="card-text"><i class="bi bi-star-half"></i> @Vehicle.Rating/5</div>
+
+                        <a href="/Vehicles/Show/@Vehicle.VehicleId" class="btn btn-outline-secondary">View request</a>
+                    </div>
+                </div>
+            }
+
+        }
+    </div>
+</div>
+
+<div class="m-1">
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end">
+            <li class="page-item">
+                <form method="get">
+                    @if (ViewBag.Asc == true)
+                    {
+                        <input type="hidden" name="sort" value="crescator" />
+                    }
+                    else if (ViewBag.Desc == false)
+                    {
+                        <input type="hidden" name="sort" value="crescator" />
+                    }
+                    <input type="hidden" name="page" value="1" />
+                    <button class="page-link link-secondary" aria-label="Previous" type="submit">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </form>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.lastPage; i++)
+            {
+                <li class="page-item">
+                    <form method="get">
+                        @if (ViewBag.Asc == true)
+                        {
+                            <input type="hidden" name="sort" value="crescator" />
+                        }
+                        else if (ViewBag.Desc == false)
+                        {
+                            <input type="hidden" name="sort" value="crescator" />
+                        }
+                        <input type="hidden" name="page" value="@i" />
+                        <button class="page-link link-secondary" type="submit">@(i)</button>
+                    </form>
+                </li>
+            }
+
+            <li class="page-item">
+                <form method="get">
+                    @if (ViewBag.Asc == true)
+                    {
+                        <input type="hidden" name="sort" value="crescator" />
+                    }
+                    else if (ViewBag.Desc == false)
+                    {
+                        <input type="hidden" name="sort" value="crescator" />
+                    }
+                    <input type="hidden" name="page" value="@ViewBag.lastPage" />
+                    <button class="page-link link-secondary" aria-label="Next" type="submit">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,22 @@
+﻿<h2>Categorii</h2>
+<br />
+
+@if (TempData.ContainsKey("messages"))
+{
+    <h1>@ViewBag.message</h1>
+}
+
+@foreach (var category in ViewBag.VehicleCategory)
+{
+    <hr />
+    @Html.Label("CategoryName", "Category name")
+    <p>@category.CategoryName</p>
+    <a class="btn btn-outline-secondary" href="/VehicleCategory/Show/@category.CategoryId">Display category</a>
+    <a class="btn btn-outline-secondary" href="/VehicleCategory/Edit/@category.CategoryId">Edit category</a>
+    <br />
+    <br />
+}
+<hr />
+<br />
+<a class="btn btn-outline-secondary" href="/VehicleCategory/New">Add a new category</a>
+<br />

@@ -1,0 +1,181 @@
+﻿@model AutoMart.Models.Vehicle
+
+@if (ViewBag.MessageCart != null)
+{
+    <h2 class="alert-secondary p-3 rounded-3 text-center mb-5">@ViewBag.MessageCart</h2>
+}
+
+@if (Model.Approved)
+{
+    @*Display product details*@
+    <div class="card">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <img src="@Model.Photo" class="card-img-top" alt="@Model.Title">
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <h3 class="card-title p-2">@Model.Title</h3>
+                    <div class="card-text p-2"><i class="bi bi-tag"></i> @Model.Price dkk</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <h5 class="card-subtitle mb-2 text-muted">@Model.Category.CategoryName</h5>
+                    <div class="card-text p-2"><i class="bi bi-person"></i> @Model.User.UserName</div>
+                </div>
+            </li>
+
+            <li class="list-group-item">
+                <div class="card-text"><i class="bi bi-star-half"></i> @Model.Rating/5</div>
+            </li>
+
+            <li class="list-group-item">
+                <div class="card-text">@Html.Raw(Model.Description)</div>
+            </li>
+            @try
+            {
+                @if (ViewBag.DisplayButtons == true && Model.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                {
+                    <li class="list-group-item">
+                        <div class="d-flex flex-row align-content-center justify-content-start">
+                            <a class="btn btn-outline-secondary" href="/Vehicles/Edit/@Model.VehicleId">Edit product</a>
+                            <form method="post" action="/Vehicles/Delete/@Model.VehicleId">
+                                <button class="btn btn-outline-secondary" type="submit">Delete product</button>
+                            </form>
+                        </div>
+                    </li>
+                }
+            }
+            catch { }
+            <li class="list-group-item">
+                <div class="d-flex flex-row align-content-center justify-content-end">
+                    @if (ViewBag.IsUser)
+                    {
+                        <form method="post" action="/Carts/New">
+                            <input type="hidden" name="VehicleId" value="@Model.VehicleId" />
+                            <input type="hidden" name="UserId" value="@ViewBag.CurrentUser" />
+                            <input type="hidden" name="Date" value="@DateTime.Now" />
+                            <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-bag-plus"></i> Add to cart</button>
+                        </form>
+                        <a class="btn btn-outline-secondary" href="/Reviews/New/@Model.VehicleId"><i class="bi bi-vector-pen"></i> Add review</a>
+                    }
+                    @if (!(ViewBag.IsUser ?? false) && !(ViewBag.IsAdmin ?? false) && !(ViewBag.IsEditor ?? false))
+                    {
+                        <a class="btn btn-outline-secondary" asp-area="Identity" asp-page="/Account/Register"><i class="bi bi-bag-plus"></i> Add to cart </a>
+                        <a class="btn btn-outline-secondary" asp-area="Identity" asp-page="/Account/Register"><i class="bi bi-vector-pen"></i> Add review </a>
+                    }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <br>
+    <br>
+
+    @if (ViewBag.Message != null)
+    {
+        <h2 class="alert-secondary p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+    }
+
+    @*Display product reviews*@
+
+    bool noReviews = true;
+
+    @foreach (var review in Model.Reviews)
+    {
+        noReviews = false;
+        <div class="card text-center">
+            <div class="card-header">User @review.User.UserName</div>
+
+            <div class="card-body">
+                <h5><i class="bi bi-star-half"></i> @review.Rating/5</h5>
+                <p class="card-text">@review.Text</p>
+            </div>
+
+            <div class="card-footer text-muted">
+                <div class="d-flex d-flex justify-content-between align-items-center">
+
+                    @if (review.UserId == ViewBag.CurrentUser || ViewBag.IsAdmin)
+                    {
+                        <div>
+                            <a class="btn btn-outline-secondary" href="/Reviews/Edit/@review.ReviewId"><i class="bi bi-pencil-square"></i>Edit</a>
+                        </div>
+
+                        <div>@review.Date</div>
+
+                        <div>
+                            <form method="post" action="/Reviews/Delete/@review.ReviewId">
+                                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-trash"></i>Delete</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>@review.Date</div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+
+    @*If there are no reviews*@
+
+    @if (noReviews)
+    {
+        <div class="card text-center">
+            <div class="card-header"></div>
+            <div class="card-body">
+                This product has no reviews.
+            </div>
+            <div class="card-footer text-muted"></div>
+        </div>
+    }
+}
+else
+    @if (User.IsInRole("Admin"))
+{
+    @*Display product details*@
+    <div class="card">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <img src="@Model.Photo" class="card-img-top" alt="@Model.Title">
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <h3 class="card-title p-2">@Model.Title</h3>
+                    <div class="card-text p-2"><i class="bi bi-tag"></i> @Model.Price dkk</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex flex-row justify-content-between align-items-center">
+                    <h5 class="card-subtitle mb-2 text-muted">@Model.Category.CategoryName</h5>
+                    <div class="card-text p-2"><i class="bi bi-person"></i> @Model.User.UserName</div>
+                </div>S
+            </li>
+
+            <li class="list-group-item">
+                <div class="card-text"><i class="bi bi-star-half"></i> @Model.Rating/5</div>
+            </li>
+
+            <li class="list-group-item">
+                <div class="card-text">@Html.Raw(Model.Description)</div>
+            </li>
+
+            <li class="list-group-item">
+                <div class="d-flex flex-row align-content-center justify-content-start">
+                    <form method="post" action="/Vehicles/Approve/@Model.VehicleId">
+                        <button class="btn btn-outline-secondary" type="submit">Approve the request</button>
+                    </form>
+               
+                    <form method="post" action="/Vehicles/Delete/@Model.VehicleId">
+                        <button class="btn btn-outline-secondary" type="submit">Reject the request</button>
+                    </form>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+
+}

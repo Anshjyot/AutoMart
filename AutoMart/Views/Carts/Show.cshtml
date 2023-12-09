@@ -1,0 +1,50 @@
+﻿<h2>Your Shopping Cart</h2>
+<p>Below you can view the Vehicle previously added to the cart:</p>
+
+@if (ViewBag.Message != null)
+{
+    <h2 class="alert-secondary p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+
+@{
+    bool noVehicles = true;
+}
+
+@foreach (AutoMart.Models.Cart item in ViewBag.VehiclesCart.Carts)
+{
+    noVehicles = false;
+    <div class="card text-center">
+
+        <div class="card-body">
+            <div class="d-flex d-flex justify-content-between align-items-center">
+                <h5> @item.Vehicle.Title</h5>
+                <p class="card-text"><i class="bi bi-tag"></i>@item.Vehicle.Price dkk</p>
+            </div>
+        </div>
+        <div class="card-footer d-flex flex-row align-content-center justify-content-between">
+            <div>
+                <a href="/Vehicles/Show/@item.Vehicle.VehicleId" class="btn btn-outline-secondary">View Vehicle <i class="bi bi-eyeglasses"></i></a>
+            </div>
+            <div>@item.Date</div>
+            <div>
+                <form method="post" action="/Carts/Delete">
+                    <input type="hidden" name="VehicleId" value="@item.VehicleId" />
+                    <input type="hidden" name="UserId" value="@item.UserId" />
+                    <input type="hidden" name="Id" value="@item.Id" />
+                    <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-trash"></i> Remove from cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@if (noVehicles)
+{
+    <div class="card text-center">
+        <div class="card-header"></div>
+        <div class="card-body">
+            You have not added anything to the shopping cart.
+        </div>
+        <div class="card-footer text-muted"></div>
+    </div>
+}
