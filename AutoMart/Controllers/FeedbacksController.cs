@@ -115,6 +115,11 @@ namespace AutoMart.Controllers
             TempData["AccessDenied"] = "You're not authorized to delete this feedback.";
             return RedirectToAction("Details", "Vehicles", new { id = feedback.VehicleId });
         }
+
+        public Task New()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
     

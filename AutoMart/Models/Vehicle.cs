@@ -17,7 +17,6 @@ namespace AutoMart.Models
         [Required(ErrorMessage = "Vehicle description is required!")]
         public string Description { get; set; }
 
-        //[Required(ErrorMessage = "Vehicle picture is required!")]
         public string? Photo { get; set; }
 
         [Required(ErrorMessage = "Vehicle price is required!")]

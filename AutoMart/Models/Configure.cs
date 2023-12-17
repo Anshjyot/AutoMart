@@ -12,29 +12,24 @@ namespace AutoMart.Models
                 serviceProvider.GetRequiredService
                 <DbContextOptions<ApplicationDbContext>>()))
             {
-                // Check if the database already contains at least one role,
-                // meaning that the code has been run.
-                // Therefore, we return to not insert the roles again.
-                // This method should be executed only once.
+                // Check if the database already contains at least one role, meaning that the code has been run.
+                
                 if (context.Roles.Any())
                 {
-                    return;   // The database already contains roles.
+                    return;  
                 }
 
-                // CREATING ROLES IN THE DATABASE
-                // if it does not contain roles, they will be created
+               
                 context.Roles.AddRange(
                     new IdentityRole { Id = "f2369e92-e6e9-48f0-a1e6-4e146596c283", Name = "Admin", NormalizedName = "Admin".ToUpper() },
                     new IdentityRole { Id = "5194406e-a6ae-4570-94a8-5af47a8f0468", Name = "Editor", NormalizedName = "Editor".ToUpper() },
                     new IdentityRole { Id = "1f89f81e-95cf-4360-9834-c0214c08d357", Name = "User", NormalizedName = "User".ToUpper() }
                 );
 
-                // a new instance which we will use for creating user passwords
-                // passwords are hash type
+                
                 var hasher = new PasswordHasher<WebUser>();
 
-                // CREATING USERS IN THE DATABASE
-                // A user is created for each role
+               
                 context.Users.AddRange(
                     new WebUser
                     {
@@ -48,7 +43,7 @@ namespace AutoMart.Models
                     },
                     new WebUser
                     {
-                        Id = "13beaf34-24c9-45fc-a5d5-0f747a011392", // primary key
+                        Id = "13beaf34-24c9-45fc-a5d5-0f747a011392", 
                         UserName = "Editor@test.com",
                         EmailConfirmed = true,
                         NormalizedEmail = "EDITOR@TEST.COM",
@@ -58,7 +53,7 @@ namespace AutoMart.Models
                     },
                     new WebUser
                     {
-                        Id = "43291cef-b112-4e5f-a4c7-367d2fbffa18", // primary key
+                        Id = "43291cef-b112-4e5f-a4c7-367d2fbffa18", 
                         UserName = "user@test.com",
                         EmailConfirmed = true,
                         NormalizedEmail = "USER@TEST.COM",
